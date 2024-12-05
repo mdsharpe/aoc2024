@@ -13,11 +13,11 @@ int[][] pagesToProduceInEachUpdate =
 
 var comparer = new Comparer(pageOrderingRules);
 
-bool GetIsInOrder(int[] update)
+bool GetIsInOrder(int[] update, out int[] sorted)
 {
     Console.Write(string.Join(',', update));
     Console.Write(" => ");
-    var sorted = update.OrderBy(o => o, comparer).ToArray();
+    sorted = update.OrderBy(o => o, comparer).ToArray();
     Console.Write(string.Join(',', sorted));
     var isInOrder = update.SequenceEqual(sorted);
     Console.WriteLine(isInOrder ? " : Y" : " : N");
@@ -26,16 +26,23 @@ bool GetIsInOrder(int[] update)
 }
 
 var result = 0;
+var result2 = 0;
 
 foreach (var update in pagesToProduceInEachUpdate)
 {
-    if (GetIsInOrder(update))
+
+    if (GetIsInOrder(update, out var sorted))
     {
         result += update[update.Length / 2];
+    }
+    else
+    {
+        result2 += sorted[update.Length / 2];
     }
 }
 
 Console.WriteLine("Part 1 result: {0}", result);
+Console.WriteLine("Part 2 result: {0}", result2);
 
 class Comparer((int x, int y)[] rules) : IComparer<int>
 {
