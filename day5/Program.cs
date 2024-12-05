@@ -1,7 +1,4 @@
-﻿using System.Data;
-using System.Security;
-
-var lines = await File.ReadAllLinesAsync(args[0]);
+﻿var lines = await File.ReadAllLinesAsync(args[0]);
 
 (int x, int y)[] pageOrderingRules =
     (from line in lines.TakeWhile(o => o.Length > 0)
