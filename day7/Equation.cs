@@ -44,6 +44,9 @@ public class Equation
                 case OperatorKind.Multiply:
                     result *= n;
                     break;
+                case OperatorKind.Concatenante:
+                    result = long.Parse(result.ToString() + n.ToString());
+                    break;
                 default:
                     throw new InvalidOperationException();
             }
