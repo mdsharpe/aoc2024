@@ -5,25 +5,25 @@ namespace day7;
 
 public class Equation
 {
-    public Equation(int testValue, IEnumerable<int> numbers)
+    public Equation(long testValue, IEnumerable<long> numbers)
     {
         TestValue = testValue;
         Numbers = numbers.ToImmutableArray();
     }
 
-    public int TestValue { get; }
-    public ImmutableArray<int> Numbers { get; }
+    public long TestValue { get; }
+    public ImmutableArray<long> Numbers { get; }
 
     public static Equation Parse(string s)
     {
-        var testValue = int.Parse(s.Substring(0, s.IndexOf(':')));
+        var testValue = long.Parse(s.Substring(0, s.IndexOf(':')));
         var numbers = s.Substring(s.IndexOf(':') + 1)
             .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-            .Select(int.Parse);
+            .Select(long.Parse);
         return new Equation(testValue, numbers);
     }
 
-    public bool TrySolve(IList<OperatorKind> operators, out int result)
+    public bool TrySolve(IList<OperatorKind> operators, out long result)
     {
         if (operators.Count != Numbers.Length - 1)
         {

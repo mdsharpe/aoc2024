@@ -3,7 +3,7 @@
 var lines = await File.ReadAllLinesAsync(args[0]);
 var equations = lines.Select(o => Equation.Parse(o)).ToArray();
 
-var totalCalibrationResult = 0;
+long totalCalibrationResult = 0;
 
 foreach (var equation in equations)
 {
@@ -14,6 +14,7 @@ foreach (var equation in equations)
         if (equation.TrySolve(operators, out var result))
         {
             totalCalibrationResult += equation.TestValue;
+            break;
         }
     }
 }
