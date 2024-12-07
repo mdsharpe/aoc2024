@@ -23,15 +23,32 @@ public class Equation
         return new Equation(testValue, numbers);
     }
 
-    public bool TrySolve(List<OperatorKind> operators, out int result)
+    public bool TrySolve(IList<OperatorKind> operators, out int result)
     {
         if (operators.Count != Numbers.Length - 1)
         {
             throw new ArgumentException("Incorrect number of operators.");
         }
 
-        result = 0;
+        result = Numbers[0];
 
-        return false;
+        for (var i = 0; i < operators.Count; i++)
+        {
+            var n = Numbers[i + 1];
+
+            switch (operators[i])
+            {
+                case OperatorKind.Add:
+                    result += n;
+                    break;
+                case OperatorKind.Multiply:
+                    result *= n;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
+        return result == TestValue;
     }
 }

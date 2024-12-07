@@ -8,9 +8,10 @@ var totalCalibrationResult = 0;
 foreach (var equation in equations)
 {
     var operatorPermutations = OperatorPermutations.Generate(equation.Numbers.Length - 1);
-    foreach (var operatorPermutation in operatorPermutations)
+
+    foreach (var operators in operatorPermutations)
     {
-        if (equation.TrySolve(operatorPermutation, out var result))
+        if (equation.TrySolve(operators, out var result))
         {
             totalCalibrationResult += equation.TestValue;
         }
