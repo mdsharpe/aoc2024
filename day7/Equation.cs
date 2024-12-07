@@ -17,9 +17,14 @@ public class Equation
     public static Equation Parse(string s)
     {
         var testValue = int.Parse(s.Substring(0, s.IndexOf(':')));
-        var numbers = s.Substring(s.IndexOf(':'))
+        var numbers = s.Substring(s.IndexOf(':') + 1)
             .Split(' ')
             .Select(int.Parse);
         return new Equation(testValue, numbers);
+    }
+
+    public bool TrySolve(List<OperatorKind> operatorPermutation)
+    {
+        throw new NotImplementedException();
     }
 }
