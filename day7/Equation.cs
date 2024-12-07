@@ -18,13 +18,20 @@ public class Equation
     {
         var testValue = int.Parse(s.Substring(0, s.IndexOf(':')));
         var numbers = s.Substring(s.IndexOf(':') + 1)
-            .Split(' ')
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
             .Select(int.Parse);
         return new Equation(testValue, numbers);
     }
 
-    public bool TrySolve(List<OperatorKind> operatorPermutation)
+    public bool TrySolve(List<OperatorKind> operators, out int result)
     {
-        throw new NotImplementedException();
+        if (operators.Count != Numbers.Length - 1)
+        {
+            throw new ArgumentException("Incorrect number of operators.");
+        }
+
+        result = 0;
+
+        return false;
     }
 }
