@@ -1,2 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿var map = await File.ReadAllLinesAsync(args[0]);
+var width = map.Select(o => o.Length).Max();
+var height = map.Length;
+
