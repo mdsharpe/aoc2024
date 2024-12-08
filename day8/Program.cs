@@ -32,6 +32,7 @@ var antennaeLocations = antennaeByFreq
     .ToHashSet();
 
 List<Antinode> antinodes = [];
+List<Antinode> resonantHarmonicNodes = [];
 
 foreach (var frequencyGroup in antennaeByFreq)
 {
@@ -41,17 +42,51 @@ foreach (var frequencyGroup in antennaeByFreq)
         {
             var dx = otherAntenna.Coords.X - antenna.Coords.X;
             var dy = otherAntenna.Coords.Y - antenna.Coords.Y;
+            var m = 0;
+            bool an1OutOfBounds = false, an2OutOfBounds = false;
 
-            antinodes.Add(new Antinode(frequencyGroup.Key, new Coords(otherAntenna.Coords.X + dx, otherAntenna.Coords.Y + dy)));
-            antinodes.Add(new Antinode(frequencyGroup.Key, new Coords(antenna.Coords.X - dx, antenna.Coords.Y - dy)));
+            do
+            {
+                m++;
+
+                bool DoAntinode(Coords antennaCoords, int multiplier)
+                {
+                    var an = new Antinode(
+                        frequencyGroup.Key,
+                        new Coords(otherAntenna.Coords.X + (dx * m), otherAntenna.Coords.Y + (dy * m)));
+
+                    if (an.Coords.X < 0 || an.Coords.X >= width
+                        || an.Coords.Y < 0 || an.Coords.Y >= height)
+                    {
+                        return false;
+                    }
+
+                    if (m == 1)
+                    {
+                        antinodes.Add(an);
+                    }
+                    else
+                    {
+                        resonantHarmonicNodes.Add(an);
+                    }
+
+                    return true;
+                }
+
+                an1OutOfBounds = !DoAntinode(otherAntenna.Coords, m);
+                an2OutOfBounds = !DoAntinode(antenna.Coords, m * -1);
+            } while (!(an1OutOfBounds && an2OutOfBounds));
         }
     }
 }
 
 var antinodeLocations = antinodes
     .Select(o => o.Coords)
-    .Where(o => o.X >= 0 && o.X < width)
-    .Where(o => o.Y >= 0 && o.Y < height)
+    .ToHashSet();
+var allHarmonicLocations = resonantHarmonicNodes
+    .Select(o => o.Coords)
+    .Concat(antinodeLocations)
+    .Concat(antennaeLocations)
     .ToHashSet();
 
 for (var y = 0; y < height; y++)
@@ -77,10 +112,20 @@ for (var y = 0; y < height; y++)
             continue;
         }
 
+        var isHarmonic = allHarmonicLocations.Contains(here);
+        if (isHarmonic)
+        {
+            Console.Write("*");
+            continue;
+        }
+
         Console.Write('.');
     }
     Console.WriteLine();
 }
 
 Console.WriteLine();
-Console.WriteLine("{0} antinode locations.", antinodeLocations.Count);
+Console.WriteLine(
+    "{0} antinode locations, {1} including harmonics.",
+    antinodeLocations.Count,
+    allHarmonicLocations.Count);
