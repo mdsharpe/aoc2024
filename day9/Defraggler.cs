@@ -11,7 +11,7 @@ public class Defraggler
 
         bool TryMoveFile()
         {
-            for (var x = disk.Count; x > 0; x--)
+            for (var x = disk.Count - 1; x > 0; x--)
             {
                 if (disk[x] is File file)
                 {
@@ -27,13 +27,33 @@ public class Defraggler
                         var i = disk.IndexOf(gap);
                         disk.Insert(i, file);
                         gap.Length -= file.Length;
+
+                        return true;
                     }
                 }
             }
+
+            return false;
         }
 
         void ConsolidateSpace()
         {
+            int len;
+
+            do
+            {
+                len = disk.Count;
+
+                for (var i = 0; i < len - 1; i++)
+                {
+                    if (disk[i] is EmptySpace toMerge
+                        && disk[i + 1] is EmptySpace toRemove)
+                    {
+                        toMerge.Length += toRemove.Length;
+                        disk.Remove(toRemove);
+                    }
+                }
+            } while (disk.Count < len);
         }
 
         while (TryMoveFile())
@@ -89,25 +109,14 @@ public class Defraggler
         int Length { get; }
     }
 
-    private class File : IDiskEntry
+    private class File(int id, int length) : IDiskEntry
     {
-        public File(int id, int length)
-        {
-            Id = id;
-            Length = length;
-        }
-
-        public int Id { get; }
-        public int Length { get; }
+        public int Id { get; } = id;
+        public int Length { get; } = length;
     }
 
-    private class EmptySpace : IDiskEntry
+    private class EmptySpace(int length) : IDiskEntry
     {
-        public EmptySpace(int length)
-        {
-            Length = length;
-        }
-
-        public int Length { get; set; }
+        public int Length { get; set; } = length;
     }
 }
