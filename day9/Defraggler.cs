@@ -9,6 +9,15 @@ public class Defraggler
     {
         var disk = ParseDisk(blocks).ToList();
 
+        void PrintDisk()
+        {
+            Console.WriteLine(
+                disk
+                    .Select(o => o.ToString())
+                    .Aggregate(string.Concat)
+            );
+        }
+
         bool TryMoveFile()
         {
             for (var x = disk.Count - 1; x > 0; x--)
@@ -23,8 +32,10 @@ public class Defraggler
 
                     if (gap is not null)
                     {
+                        var i = disk.IndexOf(file);
                         disk.Remove(file);
-                        var i = disk.IndexOf(gap);
+                        disk.Insert(i, new EmptySpace(file.Length));
+                        i = disk.IndexOf(gap);
                         disk.Insert(i, file);
                         gap.Length -= file.Length;
 
@@ -44,7 +55,7 @@ public class Defraggler
             {
                 len = disk.Count;
 
-                for (var i = 0; i < len - 1; i++)
+                for (var i = 0; i < len - 2; i++)
                 {
                     if (disk[i] is EmptySpace toMerge
                         && disk[i + 1] is EmptySpace toRemove)
@@ -56,9 +67,11 @@ public class Defraggler
             } while (disk.Count < len);
         }
 
+        PrintDisk();
         while (TryMoveFile())
         {
             ConsolidateSpace();
+            PrintDisk();
         }
 
         var checksum = blocks
@@ -113,10 +126,15 @@ public class Defraggler
     {
         public int Id { get; } = id;
         public int Length { get; } = length;
+        public override string ToString()
+            => Enumerable.Repeat(Id.ToString(), Length)
+                .Aggregate(string.Concat);
     }
 
     private class EmptySpace(int length) : IDiskEntry
     {
         public int Length { get; set; } = length;
+        public override string ToString()
+            => new string('.', Length);
     }
 }
