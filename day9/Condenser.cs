@@ -27,11 +27,6 @@ public static class Condenser
             Condense();
         }
 
-        var checksum = disk
-            .Where(o => o is not null)
-            .Select((n, i) => Convert.ToInt64(n!.Value * i))
-            .Sum();
-    
-        Console.WriteLine("Checksum condensed: {0}", checksum);
+        Console.WriteLine("Checksum condensed: {0}", Checksum.Compute(disk));
     }
 }
